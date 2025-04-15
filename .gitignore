@@ -1,0 +1,13 @@
+# Python venv
+.venv/
+
+# AWS credentials
+config/.env
+
+# Python cache files
+__pycache__/
+*.pyc
+*.pyo
+
+# System files
+.DS_Store
