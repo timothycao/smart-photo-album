@@ -1,5 +1,6 @@
 import json
 from opensearch.search import search_photos
+from lex.extract import extract_keywords
 
 
 # API spec: https://github.com/001000001/ai-photo-search-columbia-f2018/blob/master/swagger.yaml
@@ -25,8 +26,8 @@ def lambda_handler(event, context):
         # Extract query
         query = event.get('queryStringParameters', {}).get('q', '')
 
-        # Get keywords (placeholder logic for now)
-        keywords = [keyword.strip().lower() for keyword in query.split()] if query else []
+        # Get keywords using Lex
+        keywords = extract_keywords(query)
         
         # Query OpenSearch
         photos = search_photos(keywords)
@@ -53,7 +54,8 @@ if __name__ == '__main__':
     # Sample API Gateway event message
     event = {
         'queryStringParameters': {
-            'q': 'happy face'
+            # 'q': 'Show me photos of dogs and cats'
+            'q': 'Show me photos of people with happy faces'
         }
     }
     print(lambda_handler(event, None))
