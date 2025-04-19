@@ -38,6 +38,7 @@ def lambda_handler(event, context):
         # Return 200 response
         return {
             'statusCode': 200,
+            'headers': { 'Access-Control-Allow-Origin': '*' },
             'body': json.dumps({'results': results})
         }
     
@@ -45,6 +46,7 @@ def lambda_handler(event, context):
         # Return 500 response
         return {
             'statusCode': 500,
+            'headers': { 'Access-Control-Allow-Origin': '*' },
             'body': json.dumps({'code': 500, 'message': 'Internal Server Error'})
         }
 
