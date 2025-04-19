@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang='en'>
+    <head>
+        <meta charset='UTF-8'>
+        <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+        <title>Smart Photo Album</title>
+    </head>
+    <body>
+        <h1>Smart Photo Album</h1>
+
+        <!-- Search Form -->
+        <section>
+            <h2>Search Photos</h2>
+            <form id='searchForm'>
+                <input type='text' id='searchQuery' placeholder='Enter search query' required>
+                <button type='submit'>Search</button>
+            </form>
+            <div id='searchResults'></div>
+        </section>
+
+        <!-- Upload Form -->
+        <section>
+            <h2>Upload Photo</h2>
+            <form id='uploadForm' enctype='multipart/form-data'>
+                <input type='file' id='imageFile' accept='image/*' required>
+                <input type='text' id='customLabels' placeholder='Custom labels'>
+                <button type='submit'>Upload</button>
+            </form>
+            <div id='uploadStatus'></div>
+        </section>
+
+        <!-- Config -->
+        <script src='config.js'></script>
+
+        <!-- SDK dependencies -->
+        <script src='sdk/lib/axios/dist/axios.standalone.js'></script>
+        <script src='sdk/lib/CryptoJS/rollups/crypto-js.js'></script>
+        <script src='sdk/lib/url-template/url-template.js'></script>
+        <script src='sdk/lib/apiGatewayCore/sigV4Client.js'></script>
+        <script src='sdk/lib/apiGatewayCore/apiGatewayClient.js'></script>
+        <script src='sdk/lib/apiGatewayCore/simpleHttpClient.js'></script>
+        <script src='sdk/lib/apiGatewayCore/utils.js'></script>
+
+        <!-- SDK factory and client -->
+        <script src='sdk/apigClient.js'></script>
+        
+        <!-- Main script -->
+        <script src='script.js'></script>
+    </body>
+</html>

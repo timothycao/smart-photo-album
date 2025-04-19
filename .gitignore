@@ -3,6 +3,7 @@
 
 # AWS credentials
 config/.env
+frontend/config.js
 
 # Python cache files
 __pycache__/
