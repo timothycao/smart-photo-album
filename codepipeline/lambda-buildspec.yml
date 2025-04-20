@@ -1,0 +1,34 @@
+version: 0.2
+
+phases:
+  build:
+    commands:
+      # LF1-index-photos (config, s3, rekognition, opensearch)
+      - echo Building index_photos package...
+      - mkdir -p build/index_photos/lambda build/index_photos/config build/index_photos/s3 build/index_photos/rekognition build/index_photos/opensearch
+      - cp lambda/index_photos.py build/index_photos/lambda/
+      - cp config/config.py build/index_photos/config/
+      - cp s3/metadata.py build/index_photos/s3/
+      - cp rekognition/detect.py build/index_photos/rekognition/
+      - cp opensearch/insert.py build/index_photos/opensearch/
+      - (cd build/index_photos && zip -r ../index_photos.zip .)
+
+      # LF2-search-photos (config, opensearch, lex)
+      - echo Building search_photos package...
+      - mkdir -p build/search_photos/lambda build/search_photos/config build/search_photos/opensearch build/search_photos/lex
+      - cp lambda/search_photos.py build/search_photos/lambda/
+      - cp config/config.py build/search_photos/config/
+      - cp opensearch/search.py build/search_photos/opensearch/
+      - cp lex/extract.py build/search_photos/lex/
+      - (cd build/search_photos && zip -r ../search_photos.zip .)
+  
+  post_build:
+    commands:
+      - echo Deploying to Lambda...
+      - aws lambda update-function-code --function-name LF1-index-photos --zip-file fileb://build/index_photos.zip
+      - aws lambda update-function-code --function-name LF2-search-photos --zip-file fileb://build/search_photos.zip
+
+artifacts:
+  files:
+    - build/index_photos.zip
+    - build/search_photos.zip
