@@ -1,0 +1,14 @@
+# Reference: https://docs.aws.amazon.com/codebuild/latest/userguide/build-spec-ref.html
+version: 0.2
+
+phases:
+  build:
+    commands:
+      - echo Preparing frontend assets...
+      - mkdir frontend-dir
+      - cp -r frontend/* frontend-dir/
+
+artifacts:
+  base-directory: frontend-dir
+  files:
+    - '**/*'
