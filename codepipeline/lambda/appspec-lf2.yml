@@ -1,0 +1,15 @@
+# Reference: https://docs.aws.amazon.com/codedeploy/latest/userguide/reference-appspec-file-example.html
+version: 0.0
+
+Resources:
+  - myLambdaFunction:
+      Type: AWS::Lambda::Function
+      Properties:
+        Name: "LF2-search-photos"
+        Alias: "prod"
+        CurrentVersion: "1"
+        TargetVersion: "2"
+
+# Hooks:
+#   - BeforeAllowTraffic: "LambdaFunctionToValidateBeforeTrafficShift"
+#   - AfterAllowTraffic: "LambdaFunctionToValidateAfterTrafficShift"

@@ -1,0 +1,45 @@
+# Reference: https://docs.aws.amazon.com/codebuild/latest/userguide/build-spec-ref.html
+version: 0.2
+
+phases:
+  build:
+    commands:
+      # LF1-index-photos (config, s3, rekognition, opensearch)
+      - echo Building index_photos package...
+      - mkdir -p index_photos/{lambda,config,s3,rekognition,opensearch}
+      - cp lambda/index_photos.py  index_photos/lambda/
+      - cp config/config.py        index_photos/config/
+      - cp s3/metadata.py          index_photos/s3/
+      - cp rekognition/detect.py   index_photos/rekognition/
+      - cp opensearch/insert.py    index_photos/opensearch/
+      - (cd index_photos && zip -r ../index_photos.zip .)
+
+      # LF2-search-photos (config, opensearch, lex)
+      - echo Building search_photos package...
+      - mkdir -p search_photos/{lambda,config,opensearch,lex}
+      - cp lambda/search_photos.py search_photos/lambda/
+      - cp config/config.py        search_photos/config/
+      - cp opensearch/search.py    search_photos/opensearch/
+      - cp lex/extract.py          search_photos/lex/
+      - (cd search_photos && zip -r ../search_photos.zip .)
+
+      # Copy zip and appspec files into artifact output folders
+      - echo Organizing deployment artifacts...
+      - mkdir -p lf1 lf2
+      - cp index_photos.zip lf1/
+      - cp codepipeline/lambda/appspec-lf1.yml lf1/appspec.yml
+      - cp search_photos.zip lf2/
+      - cp codepipeline/lambda/appspec-lf2.yml lf2/appspec.yml
+
+artifacts:  
+  secondary-artifacts:
+    LF1Artifact:
+      base-directory: lf1
+      files:
+        - index_photos.zip
+        - appspec.yml
+    LF2Artifact:
+      base-directory: lf2
+      files:
+        - search_photos.zip
+        - appspec.yml
