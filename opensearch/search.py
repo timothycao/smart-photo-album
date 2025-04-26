@@ -1,6 +1,7 @@
 import requests
 from config.config import OPENSEARCH_URL, OPENSEARCH_HEADERS, OPENSEARCH_AUTH
 
+
 def search_photos(labels):
     url = f'{OPENSEARCH_URL}/photos/_search'
 

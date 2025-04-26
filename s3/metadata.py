@@ -1,10 +1,9 @@
-import boto3
+from config.config import s3_client
 
-s3 = boto3.client('s3')
 
 # Reference: https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/s3/client/head_object.html
 def get_custom_labels(bucket, photo):
-    response = s3.head_object(
+    response = s3_client.head_object(
         Bucket=bucket,
         Key=photo
     )
@@ -19,6 +18,6 @@ def get_custom_labels(bucket, photo):
 
 
 if __name__ == '__main__':
-    bucket = 'cs-gy-9223-smart-photo-album'
+    bucket = 'cs-gy-9223-smart-photo-album-storage'
     photo = 'HappyFace.jpg'
     print('Custom labels:', get_custom_labels(bucket, photo))

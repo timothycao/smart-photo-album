@@ -48,7 +48,7 @@ if __name__ == '__main__':
             {
                 's3': {
                     'bucket': {
-                        'name': 'cs-gy-9223-smart-photo-album'
+                        'name': 'cs-gy-9223-smart-photo-album-storage'
                     },
                     'object': {
                         'key': 'HappyFace.jpg'

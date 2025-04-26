@@ -1,10 +1,5 @@
 import uuid
-import boto3
-from config.config import LEX_BOT_ID, LEX_BOT_ALIAS_ID, LEX_LOCALE_ID
-
-
-# Initialize Lex Client
-lex_client = boto3.client('lexv2-runtime')
+from config.config import lex_client, LEX_BOT_ID, LEX_BOT_ALIAS_ID, LEX_LOCALE_ID
 
 
 def extract_keywords(query):
