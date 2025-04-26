@@ -30,7 +30,7 @@ phases:
       # Create LF1 appspec with dynamic versioning
       - echo Fetching current version for LF1...
       - LF1_CURRENT_VERSION=$(aws lambda get-alias --function-name LF1-index-photos --name prod --query 'FunctionVersion' --output text)
-      - LF1_TARGET_VERSION=$(($LF1_CURRENT_VERSION + 1))
+      - LF1_TARGET_VERSION=$(aws lambda publish-version --function-name LF1-index-photos --query 'Version' --output text)
       - echo Creating appspec.yml for LF1...
       - |
         cat <<EOF > lf1/appspec.yml
@@ -48,7 +48,7 @@ phases:
       # Create LF2 appspec with dynamic versioning
       - echo Fetching current version for LF2...
       - LF2_CURRENT_VERSION=$(aws lambda get-alias --function-name LF2-search-photos --name prod --query 'FunctionVersion' --output text)
-      - LF2_TARGET_VERSION=$(($LF2_CURRENT_VERSION + 1))
+      - LF2_TARGET_VERSION=$(aws lambda publish-version --function-name LF2-search-photos --query 'Version' --output text)
       - echo Creating appspec.yml for LF2...
       - |
         cat <<EOF > lf2/appspec.yml
