@@ -4,6 +4,10 @@ version: 0.2
 phases:
   build:
     commands:
+      # Create deployment artifacts
+      - echo Creating deployment artifacts...
+      - mkdir -p lf1 lf2
+
       # LF1-index-photos (config, s3, rekognition, opensearch)
       - echo Building index_photos package...
       - mkdir -p index_photos/{lambda,config,s3,rekognition,opensearch}
@@ -12,7 +16,7 @@ phases:
       - cp s3/metadata.py          index_photos/s3/
       - cp rekognition/detect.py   index_photos/rekognition/
       - cp opensearch/insert.py    index_photos/opensearch/
-      - (cd index_photos && zip -r ../index_photos.zip .)
+      - (cd index_photos && zip -r ../lf1/index_photos.zip .)
 
       # LF2-search-photos (config, opensearch, lex)
       - echo Building search_photos package...
@@ -21,17 +25,45 @@ phases:
       - cp config/config.py        search_photos/config/
       - cp opensearch/search.py    search_photos/opensearch/
       - cp lex/extract.py          search_photos/lex/
-      - (cd search_photos && zip -r ../search_photos.zip .)
+      - (cd search_photos && zip -r ../lf2/search_photos.zip .)
 
-      # Copy zip and appspec files into artifact output folders
-      - echo Organizing deployment artifacts...
-      - mkdir -p lf1 lf2
-      - cp index_photos.zip lf1/
-      - cp codepipeline/lambda/appspec-lf1.yml lf1/appspec.yml
-      - cp search_photos.zip lf2/
-      - cp codepipeline/lambda/appspec-lf2.yml lf2/appspec.yml
+      # Create LF1 appspec with dynamic versioning
+      - echo Fetching current version for LF1...
+      - LF1_CURRENT_VERSION=$(aws lambda get-alias --function-name LF1-index-photos --name prod --query 'FunctionVersion' --output text)
+      - LF1_TARGET_VERSION=$(($LF1_CURRENT_VERSION + 1))
+      - echo Creating appspec.yml for LF1...
+      - |
+        cat <<EOF > lf1/appspec.yml
+        version: 0.0
+        Resources:
+          - myLambdaFunction:
+              Type: AWS::Lambda::Function
+              Properties:
+                Name: "LF1-index-photos"
+                Alias: "prod"
+                CurrentVersion: "$LF1_CURRENT_VERSION"
+                TargetVersion: "$LF1_TARGET_VERSION"
+        EOF
 
-artifacts:  
+      # Create LF2 appspec with dynamic versioning
+      - echo Fetching current version for LF2...
+      - LF2_CURRENT_VERSION=$(aws lambda get-alias --function-name LF2-search-photos --name prod --query 'FunctionVersion' --output text)
+      - LF2_TARGET_VERSION=$(($LF2_CURRENT_VERSION + 1))
+      - echo Creating appspec.yml for LF2...
+      - |
+        cat <<EOF > lf2/appspec.yml
+        version: 0.0
+        Resources:
+          - myLambdaFunction:
+              Type: AWS::Lambda::Function
+              Properties:
+                Name: "LF2-search-photos"
+                Alias: "prod"
+                CurrentVersion: "$LF2_CURRENT_VERSION"
+                TargetVersion: "$LF2_TARGET_VERSION"
+        EOF
+
+artifacts:
   secondary-artifacts:
     LF1Artifact:
       base-directory: lf1
